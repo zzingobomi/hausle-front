@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+
+.title {
+  @apply w-full font-bold text-center text-3xl mb-5;
+}
+
+.input {
+  @apply focus:outline-none focus:border-gray-500 p-3 border-2 text-lg border-gray-200 transition-colors;
+}
+
+.primary-button {
+  @apply text-lg font-medium focus:outline-none text-white py-4 transition-colors;
+}
+
+@tailwind utilities;
+
+@layer components {
+  .text-stroke {
+    text-shadow: -1px -1px 0 #222, 1px -1px 0 #222, -1px 1px 0 #222,
+      1px 1px 0 #222;
+  }
+}
