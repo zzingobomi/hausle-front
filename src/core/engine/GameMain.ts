@@ -1,16 +1,20 @@
 import {
   AmbientLight,
+  HemisphereLight,
   DirectionalLight,
   Group,
   PCFSoftShadowMap,
   PerspectiveCamera,
   Scene,
   sRGBEncoding,
+  LinearEncoding,
   WebGLRenderer,
 } from "three";
-import { init, World } from "@dimforge/rapier3d-compat";
-import Stats from "stats.js";
+import { init, World, ColliderDesc } from "@dimforge/rapier3d-compat";
 import { Managers } from "../managers/Managers";
+import { RapierDebugRenderer } from "./RapierDebugRenderer";
+import { CameraOperator } from "./CameraOperator";
+import Stats from "stats.js";
 
 export enum GameMode {
   GAME,
@@ -21,12 +25,14 @@ export class GameMain {
   private divContainer: HTMLDivElement;
   public renderer: WebGLRenderer;
   public camera: PerspectiveCamera;
+  public cameraOperator: CameraOperator;
 
   public scene: Scene;
   private previousTime = 0;
 
   private dungeonWorld: Group;
   public physicsWorld: World;
+  private rapierDebugRenderer: RapierDebugRenderer;
 
   // Debug
   public stats: Stats;
@@ -48,13 +54,15 @@ export class GameMain {
     this.resize();
 
     requestAnimationFrame(this.render.bind(this));
+
+    Managers.Main = this;
   }
 
   private initRenderer(): void {
     const renderer = new WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    renderer.outputEncoding = sRGBEncoding;
+    //renderer.outputEncoding = sRGBEncoding;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = PCFSoftShadowMap;
     this.divContainer.appendChild(renderer.domElement);
@@ -75,13 +83,15 @@ export class GameMain {
     );
 
     this.camera.position.set(0, 10, 0);
+    this.cameraOperator = new CameraOperator(this.camera, 0.3);
   }
 
   private initLight(): void {
     const ambientLight = new AmbientLight(0xffffff, 0.4);
     this.scene.add(ambientLight);
 
-    const directionalLight = new DirectionalLight(0xffffff, 1);
+    //const directionalLight = new DirectionalLight(0xffffff, 1);
+    const directionalLight = new DirectionalLight(0xffffff, 3.5);
     directionalLight.position.set(1, 1, 0.5).normalize();
     this.scene.add(directionalLight);
   }
@@ -93,32 +103,40 @@ export class GameMain {
     await init();
     const gravity = { x: 0.0, y: -9.81, z: 0.0 };
     this.physicsWorld = new World(gravity);
-    // this.rapierDebugRenderer = new RapierDebugRenderer(
-    //   this.scene,
-    //   this.physicsWorld
-    // );
+    this.rapierDebugRenderer = new RapierDebugRenderer(
+      this.scene,
+      this.physicsWorld
+    );
 
     const dungeonGltf = await Managers.Resource.Load(
       `http://${process.env.REACT_APP_STORAGE}/hausle/Dungeon.glb`
     );
-    const rosalesGltf = await Managers.Resource.Load(
-      `http://${process.env.REACT_APP_STORAGE}/hausle/Rosales.glb`
-    );
-    const castleGuardGltf = await Managers.Resource.Load(
-      `http://${process.env.REACT_APP_STORAGE}/hausle/CastleGuard.glb`
-    );
-    const paladinGltf = await Managers.Resource.Load(
-      `http://${process.env.REACT_APP_STORAGE}/hausle/Paladin.glb`
-    );
+
+    const navMesh = dungeonGltf.scene.getObjectByName("Navmesh");
+    navMesh!.visible = false;
+
+    // 임시 바닥
+    const colliderDesc = ColliderDesc.cuboid(10, 1, 10);
+    colliderDesc.setTranslation(0, 0, 0);
+    this.physicsWorld.createCollider(colliderDesc);
+
+    // TODO: 바닥 trimesh 가능? 캐릭터 capsule 위치 조정
+
+    // TODO: 횃불 만들기
+
     this.dungeonWorld = dungeonGltf.scene;
     this.scene.add(this.dungeonWorld);
 
     this.initServer();
   }
 
-  private async initServer(): Promise<void> {}
+  private async initServer(): Promise<void> {
+    Managers.Network.InitServer("test");
+  }
 
   private update(delta: number): void {
+    Managers.Instance.Update(delta);
+
     this.physicsWorld?.step();
   }
 

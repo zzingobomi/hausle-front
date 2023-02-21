@@ -1,5 +1,9 @@
 import { GameMain } from "../engine/GameMain";
+import { InputManager } from "./InputManager";
+import { NetworkManager } from "./NetworkManager";
+import { PlayerManager } from "./PlayerManager";
 import { ResourceManager } from "./ResourceManager";
+import { UpdateObjectManager } from "./UpdateObjectManager";
 
 export class Managers {
   private static s_instance: Managers;
@@ -9,7 +13,11 @@ export class Managers {
   }
 
   _main: GameMain;
+  _input: InputManager = new InputManager();
   _resource: ResourceManager = new ResourceManager();
+  _updateObject: UpdateObjectManager = new UpdateObjectManager();
+  _network: NetworkManager = new NetworkManager();
+  _players: PlayerManager = new PlayerManager();
 
   static get Main(): GameMain {
     return Managers.Instance._main;
@@ -17,11 +25,27 @@ export class Managers {
   static set Main(value: GameMain) {
     Managers.Instance._main = value;
   }
+  static get Input(): InputManager {
+    return Managers.Instance._input;
+  }
   static get Resource(): ResourceManager {
     return Managers.Instance._resource;
   }
+  static get UpdateObject(): UpdateObjectManager {
+    return Managers.Instance._updateObject;
+  }
+  static get Network(): NetworkManager {
+    return Managers.Instance._network;
+  }
+  static get Players(): PlayerManager {
+    return Managers.Instance._players;
+  }
 
-  public Update(delta: number): void {}
+  public Update(delta: number): void {
+    this._input.Update(delta);
+    this._updateObject.Update(delta);
+    this._players.Update(delta);
+  }
 
   static Init(): void {
     if (!this.s_instance) {
@@ -31,5 +55,7 @@ export class Managers {
     }
   }
 
-  public static Clear(): void {}
+  public static Clear(): void {
+    this.Input.Dispose();
+  }
 }
