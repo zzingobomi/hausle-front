@@ -1,4 +1,4 @@
-import { Matrix4, Object3D, Quaternion, Vector3 } from "three";
+import { Matrix4, Object3D, Quaternion, Vector3, BufferGeometry } from "three";
 import { Character } from "../../characters/Character";
 import { Idle } from "../../characters/character_states/Idle";
 import { Run } from "../../characters/character_states/Run";
@@ -211,6 +211,16 @@ export function lerpVector(start: Vector3, end: Vector3, amt: number) {
 
 export function clampNumber(num: number, min: number, max: number) {
   return Math.max(Math.min(num, Math.max(min, max)), Math.min(min, max));
+}
+
+export function flipBufferGeometryNormalsIndexed(geometry: BufferGeometry) {
+  const index = geometry.index!.array as Array<number>;
+  for (let i = 0, il = index.length / 3; i < il; i++) {
+    let x = index[i * 3];
+    index[i * 3] = index[i * 3 + 2];
+    index[i * 3 + 2] = x;
+  }
+  geometry.index!.needsUpdate = true;
 }
 
 export function characterStateFactory(

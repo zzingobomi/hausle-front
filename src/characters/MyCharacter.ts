@@ -68,20 +68,17 @@ export class MyCharacter extends Character implements IInputReceiver {
       right: new KeyBinding("KeyD"),
       run: new KeyBinding("ShiftLeft"),
       jump: new KeyBinding("Space"),
-
-      // VideoPlay
-      videoStart: new KeyBinding("KeyF"),
-      videoPause: new KeyBinding("KeyG"),
-      videoMuted: new KeyBinding("KeyM"),
     };
 
     // Physics
     let rigidBodyDesc = new RigidBodyDesc(RigidBodyType.Dynamic).setTranslation(
       transformInfo.position.x,
-      transformInfo.position.y,
+      transformInfo.position.y + this.height / 2,
       transformInfo.position.z
     );
-    let colliderDesc = new ColliderDesc(new Capsule(0.5, 0.25));
+    let colliderDesc = new ColliderDesc(
+      new Capsule(this.height / 2 - this.diameter / 2, this.diameter / 2)
+    );
     this.rigidBody = Managers.Main.physicsWorld.createRigidBody(rigidBodyDesc);
     this.rigidBody.setEnabledRotations(false, false, false, true);
     this.collider = Managers.Main.physicsWorld.createCollider(
@@ -283,7 +280,7 @@ export class MyCharacter extends Character implements IInputReceiver {
       this.rigidBody.setLinvel(
         {
           x: arcadeVelocity.x,
-          y: 0,
+          y: this.rigidBody.linvel().y,
           z: arcadeVelocity.z,
         },
         true

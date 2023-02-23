@@ -1,16 +1,23 @@
 import {
   AmbientLight,
-  HemisphereLight,
   DirectionalLight,
   Group,
   PCFSoftShadowMap,
   PerspectiveCamera,
   Scene,
-  sRGBEncoding,
-  LinearEncoding,
   WebGLRenderer,
+  Object3D,
+  Mesh,
+  BufferGeometry,
+  Vector3,
+  Quaternion,
 } from "three";
-import { init, World, ColliderDesc } from "@dimforge/rapier3d-compat";
+import {
+  init,
+  World,
+  EventQueue,
+  ColliderDesc,
+} from "@dimforge/rapier3d-compat";
 import { Managers } from "../managers/Managers";
 import { RapierDebugRenderer } from "./RapierDebugRenderer";
 import { CameraOperator } from "./CameraOperator";
@@ -32,6 +39,7 @@ export class GameMain {
 
   private dungeonWorld: Group;
   public physicsWorld: World;
+  public eventQueue: EventQueue;
   private rapierDebugRenderer: RapierDebugRenderer;
 
   // Debug
@@ -103,6 +111,7 @@ export class GameMain {
     await init();
     const gravity = { x: 0.0, y: -9.81, z: 0.0 };
     this.physicsWorld = new World(gravity);
+    this.eventQueue = new EventQueue(false);
     this.rapierDebugRenderer = new RapierDebugRenderer(
       this.scene,
       this.physicsWorld
@@ -111,16 +120,29 @@ export class GameMain {
     const dungeonGltf = await Managers.Resource.Load(
       `http://${process.env.REACT_APP_STORAGE}/hausle/Dungeon.glb`
     );
+    const leftStairsGltf = await Managers.Resource.Load(
+      `http://${process.env.REACT_APP_STORAGE}/hausle/left-stairs.glb`
+    );
+    const rightStairsGltf = await Managers.Resource.Load(
+      `http://${process.env.REACT_APP_STORAGE}/hausle/right-stairs.glb`
+    );
+
+    this.createTrimeshPhysics(leftStairsGltf.scene, 0.01, true, true);
+    this.createTrimeshPhysics(rightStairsGltf.scene, 0.01, true);
 
     const navMesh = dungeonGltf.scene.getObjectByName("Navmesh");
     navMesh!.visible = false;
 
-    // 임시 바닥
-    const colliderDesc = ColliderDesc.cuboid(10, 1, 10);
-    colliderDesc.setTranslation(0, 0, 0);
-    this.physicsWorld.createCollider(colliderDesc);
+    dungeonGltf.scene.traverse((child) => {
+      if (child.name.includes("Floor")) {
+        this.createTrimeshPhysics(child);
+      }
+    });
 
-    // TODO: 바닥 trimesh 가능? 캐릭터 capsule 위치 조정
+    // 임시 바닥
+    // const colliderDesc = ColliderDesc.cuboid(50, 1, 50);
+    // colliderDesc.setTranslation(0, -1, 0);
+    // this.physicsWorld.createCollider(colliderDesc);
 
     // TODO: 횃불 만들기
 
@@ -137,7 +159,10 @@ export class GameMain {
   private update(delta: number): void {
     Managers.Instance.Update(delta);
 
-    this.physicsWorld?.step();
+    if (this.physicsWorld) {
+      this.physicsWorld.timestep = delta;
+      this.physicsWorld.step(this.eventQueue);
+    }
   }
 
   private resize() {
@@ -167,5 +192,55 @@ export class GameMain {
     this.stats.end();
 
     requestAnimationFrame(this.render.bind(this));
+  }
+
+  private createTrimeshPhysics(
+    object3D: Object3D,
+    scale = 0.01,
+    isLocal = true,
+    inverseX = false
+  ): void {
+    object3D.traverse((child) => {
+      if (child instanceof Mesh) {
+        const geometry = child.geometry;
+        if (geometry instanceof BufferGeometry) {
+          let triVertices = geometry.attributes.position.array as Float32Array;
+          if (inverseX) {
+            triVertices = triVertices.map((x: number, index: number) => {
+              if (index % 3 === 0) {
+                return x * -1.0;
+              }
+              return x;
+            });
+          }
+          const triIndices = geometry.index?.array as Uint32Array;
+          const triColliderDesc = ColliderDesc.trimesh(
+            triVertices.map((x) => x * scale),
+            triIndices
+          );
+
+          if (isLocal) {
+            const worldPosition = new Vector3();
+            const worldQuaternion = new Quaternion();
+            //const worldScale = new Vector3();
+
+            child.getWorldPosition(worldPosition);
+            child.getWorldQuaternion(worldQuaternion);
+            //child.getWorldScale(worldScale);
+
+            triColliderDesc
+              .setTranslation(worldPosition.x, worldPosition.y, worldPosition.z)
+              .setRotation({
+                x: worldQuaternion.x,
+                y: worldQuaternion.y,
+                z: worldQuaternion.z,
+                w: worldQuaternion.w,
+              });
+          }
+
+          this.physicsWorld.createCollider(triColliderDesc);
+        }
+      }
+    });
   }
 }

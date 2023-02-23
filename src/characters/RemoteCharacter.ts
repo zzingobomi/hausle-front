@@ -32,10 +32,12 @@ export class RemoteCharacter extends Character {
     // Physics
     let rigidBodyDesc = new RigidBodyDesc(RigidBodyType.Fixed).setTranslation(
       transformInfo.position.x,
-      transformInfo.position.y,
+      transformInfo.position.y + this.height / 2 - this.diameter / 2,
       transformInfo.position.z
     );
-    let colliderDesc = new ColliderDesc(new Capsule(0.5, 0.25));
+    let colliderDesc = new ColliderDesc(
+      new Capsule(this.height / 2 - this.diameter / 2, this.diameter / 2)
+    );
     this.rigidBody = Managers.Main.physicsWorld.createRigidBody(rigidBodyDesc);
     this.collider = Managers.Main.physicsWorld.createCollider(
       colliderDesc,

@@ -21,7 +21,7 @@ export class PlayerManager {
     const { position, quaternion, scale } =
       this.createTransformInfo(playerUpdator);
     const charGltf = await Managers.Resource.Load(
-      `http://${process.env.REACT_APP_STORAGE}/hausle/Arissa-scale.glb`
+      `http://${process.env.REACT_APP_STORAGE}/hausle/Arissa.glb`
     );
     const myCharacter = new MyCharacter(
       charGltf,
@@ -49,7 +49,7 @@ export class PlayerManager {
     const { position, quaternion, scale } =
       this.createTransformInfo(playerUpdator);
     const charGltf = await Managers.Resource.Load(
-      `http://${process.env.REACT_APP_STORAGE}/hausle/Arissa-scale.glb`
+      `http://${process.env.REACT_APP_STORAGE}/hausle/Arissa.glb`
     );
     const remoteCharacter = new RemoteCharacter(
       charGltf,

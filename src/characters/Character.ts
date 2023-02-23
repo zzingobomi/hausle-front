@@ -9,6 +9,7 @@ import {
   SpriteMaterial,
   Texture,
   Vector3,
+  Box3,
 } from "three";
 import { GLTF } from "three-stdlib";
 import { RigidBody, Collider } from "@dimforge/rapier3d-compat";
@@ -24,6 +25,7 @@ export interface TransformInfo {
 
 export class Character extends Object3D implements ICharacter {
   height: number;
+  diameter: number;
   tiltContainer: Group;
   modelContainer: Group;
   mixer: AnimationMixer;
@@ -38,12 +40,16 @@ export class Character extends Object3D implements ICharacter {
 
   constructor(gltf: GLTF, transformInfo: TransformInfo, nickname: string) {
     super();
+    gltf.scene.scale.set(0.01, 0.01, 0.01);
+
+    const box = new Box3().setFromObject(gltf.scene);
+    this.height = box.max.y - box.min.y;
+    this.diameter = box.max.z - box.min.z;
 
     this.tiltContainer = new Group();
     this.add(this.tiltContainer);
 
     this.modelContainer = new Group();
-    this.modelContainer.position.y = -0.1;
     this.tiltContainer.add(this.modelContainer);
     this.modelContainer.add(gltf.scene);
 
@@ -103,22 +109,22 @@ export class Character extends Object3D implements ICharacter {
     if (!this.nickname || this.nickname === "") return;
 
     const canvas = document.createElement("canvas");
-    canvas.width = 256;
-    canvas.height = 256;
+    canvas.width = 512;
+    canvas.height = 512;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.font = "20pt Arial";
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
-    ctx.fillText(this.nickname, 128, 44);
-    ctx.strokeText(this.nickname, 128, 44);
+    ctx.fillText(this.nickname, 256, 88);
+    ctx.strokeText(this.nickname, 256, 88);
 
     const tex = new Texture(canvas);
     tex.needsUpdate = true;
     const spriteMat = new SpriteMaterial({ map: tex });
     const sprite = new Sprite(spriteMat);
-    sprite.position.set(0, 0.3, 0);
-    sprite.scale.set(1, 1, 1);
+    sprite.position.set(0, 0.4, 0);
+    sprite.scale.set(2, 2, 2);
 
     this.add(sprite);
   }
