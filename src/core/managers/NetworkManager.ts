@@ -1,10 +1,10 @@
 import * as Colyseus from "colyseus.js";
-import { DataChange } from "@colyseus/schema";
 import { Quaternion, Vector3 } from "three";
 import { Managers } from "./Managers";
 import { DungeonRoomState } from "../../shared/DungeonRoomState";
 import { Player } from "../../shared/Player";
 import { EventPacket } from "../../shared/EventPacket";
+import { Npc } from "../../shared/Npc";
 import PubSub from "pubsub-js";
 
 export class NetworkManager {
@@ -23,6 +23,10 @@ export class NetworkManager {
       // Players
       this.room.state.players.onAdd = this.playerAdd.bind(this);
       this.room.state.players.onRemove = this.playerRemove.bind(this);
+
+      // Npcs
+      this.room.state.npcs.onAdd = this.npcAdd.bind(this);
+      this.room.state.npcs.onRemove = this.npcRemove.bind(this);
     } catch (e) {
       console.error("join error", e);
     }
@@ -74,5 +78,16 @@ export class NetworkManager {
 
   private playerRemove(playerUpdator: Player, sessionId: string) {
     Managers.Players.RemovePlayer(sessionId);
+  }
+
+  ///
+  /// Npc
+  ///
+  private npcAdd(npcUpdator: Npc, networkId: string) {
+    Managers.Npcs.CreateNpc(npcUpdator, networkId);
+  }
+
+  private npcRemove(npcUpdator: Npc, networkId: string) {
+    Managers.Npcs.RemoveNpc(networkId);
   }
 }

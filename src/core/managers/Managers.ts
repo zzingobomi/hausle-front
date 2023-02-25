@@ -1,6 +1,7 @@
 import { GameMain } from "../engine/GameMain";
 import { InputManager } from "./InputManager";
 import { NetworkManager } from "./NetworkManager";
+import { NpcManager } from "./NpcManager";
 import { PlayerManager } from "./PlayerManager";
 import { ResourceManager } from "./ResourceManager";
 import { UpdateObjectManager } from "./UpdateObjectManager";
@@ -18,6 +19,7 @@ export class Managers {
   _updateObject: UpdateObjectManager = new UpdateObjectManager();
   _network: NetworkManager = new NetworkManager();
   _players: PlayerManager = new PlayerManager();
+  _npcs: NpcManager = new NpcManager();
 
   static get Main(): GameMain {
     return Managers.Instance._main;
@@ -40,11 +42,15 @@ export class Managers {
   static get Players(): PlayerManager {
     return Managers.Instance._players;
   }
+  static get Npcs(): NpcManager {
+    return Managers.Instance._npcs;
+  }
 
   public Update(delta: number): void {
     this._input.Update(delta);
     this._updateObject.Update(delta);
     this._players.Update(delta);
+    this._npcs.Update(delta);
   }
 
   static Init(): void {
