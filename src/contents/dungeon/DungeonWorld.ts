@@ -8,7 +8,7 @@ import {
   Quaternion,
   Vector3,
 } from "three";
-import { Managers } from "../core/managers/Managers";
+import { Managers } from "../../core/managers/Managers";
 import { TorchlightParticle } from "./TorchlightParticle";
 
 export class DungeonWorld {

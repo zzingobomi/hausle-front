@@ -20,4 +20,8 @@
     text-shadow: -1px -1px 0 #222, 1px -1px 0 #222, -1px 1px 0 #222,
       1px 1px 0 #222;
   }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+  }
 }

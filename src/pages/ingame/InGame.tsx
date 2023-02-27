@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
+import { UiPanel } from "../../contents/ui/UiPanel";
 import { GameMain } from "../../core/engine/GameMain";
 
 export const InGame = () => {
@@ -29,6 +30,7 @@ export const InGame = () => {
         ref={container}
         className="absolute w-full h-full top-0 left-0"
       ></div>
+      <UiPanel />
     </>
   );
 };

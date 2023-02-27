@@ -10,7 +10,8 @@ import { init, World, EventQueue } from "@dimforge/rapier3d-compat";
 import { Managers } from "../managers/Managers";
 import { RapierDebugRenderer } from "./RapierDebugRenderer";
 import { CameraOperator } from "./CameraOperator";
-import { DungeonWorld } from "../../contents/DungeonWorld";
+import { DungeonWorld } from "../../contents/dungeon/DungeonWorld";
+import { GAMEMODE_CHANGE } from "../../contents/SignalType";
 import Stats from "stats.js";
 
 export enum GameMode {
@@ -31,6 +32,9 @@ export class GameMain {
   public physicsWorld: World;
   public eventQueue: EventQueue;
   private rapierDebugRenderer: RapierDebugRenderer;
+
+  // GameMode
+  public gameMode: GameMode = GameMode.GAME;
 
   // Debug
   public stats: Stats;
@@ -93,7 +97,11 @@ export class GameMain {
     this.scene.add(directionalLight);
   }
 
-  private registSubscribes(): void {}
+  private registSubscribes(): void {
+    PubSub.subscribe(GAMEMODE_CHANGE, (msg, mode) => {
+      this.gameMode = mode;
+    });
+  }
 
   private async initWorld(): Promise<void> {
     // Rapier

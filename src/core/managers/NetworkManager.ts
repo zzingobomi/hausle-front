@@ -6,6 +6,14 @@ import { Player } from "../../shared/Player";
 import { EventPacket } from "../../shared/EventPacket";
 import { Npc } from "../../shared/Npc";
 import PubSub from "pubsub-js";
+import { CHATTING_RECEIVE } from "../../contents/SignalType";
+import { ChattingItemType } from "../../contents/ui/components/ChattingItem";
+
+interface IChattingData {
+  sessionId: string;
+  message: string;
+  time: number;
+}
 
 export class NetworkManager {
   client: Colyseus.Client;
@@ -27,6 +35,26 @@ export class NetworkManager {
       // Npcs
       this.room.state.npcs.onAdd = this.npcAdd.bind(this);
       this.room.state.npcs.onRemove = this.npcRemove.bind(this);
+
+      // Chatting
+      this.room.onMessage(
+        EventPacket.ChattingReceive,
+        (data: IChattingData) => {
+          if (this.room.sessionId === data.sessionId) {
+            PubSub.publish(CHATTING_RECEIVE, {
+              type: ChattingItemType.MINE,
+              message: data.message,
+              time: data.time,
+            });
+          } else {
+            PubSub.publish(CHATTING_RECEIVE, {
+              type: ChattingItemType.REMOTE,
+              message: data.message,
+              time: data.time,
+            });
+          }
+        }
+      );
     } catch (e) {
       console.error("join error", e);
     }
@@ -73,11 +101,22 @@ export class NetworkManager {
       Managers.Players.CreateMyPlayer(playerUpdator, sessionId);
     } else {
       Managers.Players.CreateRemotePlayer(playerUpdator, sessionId);
+      PubSub.publish(CHATTING_RECEIVE, {
+        type: ChattingItemType.SERVER,
+        message: `[${playerUpdator.nickname}] 님이 입장하셨습니다.`,
+        time: Date.now(),
+      });
     }
   }
 
   private playerRemove(playerUpdator: Player, sessionId: string) {
     Managers.Players.RemovePlayer(sessionId);
+    Managers.Players.CreateRemotePlayer(playerUpdator, sessionId);
+    PubSub.publish(CHATTING_RECEIVE, {
+      type: ChattingItemType.SERVER,
+      message: `[${playerUpdator.nickname}] 님이 퇴장하셨습니다.`,
+      time: Date.now(),
+    });
   }
 
   ///
@@ -89,5 +128,12 @@ export class NetworkManager {
 
   private npcRemove(npcUpdator: Npc, networkId: string) {
     Managers.Npcs.RemoveNpc(networkId);
+  }
+
+  ///
+  /// Chatting
+  ///
+  public SendChatting(message: string): void {
+    this.room.send(EventPacket.ChattingSend, message);
   }
 }

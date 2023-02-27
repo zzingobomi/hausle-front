@@ -14,6 +14,7 @@ import { IInputReceiver } from "../core/interfaces/IInputReceiver";
 import { ICharacterState } from "../core/interfaces/ICharacterState";
 import { Idle } from "./character_states/Idle";
 import { Character, TransformInfo } from "./Character";
+import { GameMode } from "../core/engine/GameMain";
 import * as Utils from "../core/engine/Utils";
 
 export class MyCharacter extends Character implements IInputReceiver {
@@ -211,6 +212,8 @@ export class MyCharacter extends Character implements IInputReceiver {
     if (code === "KeyC" && pressed === true && event.shiftKey === true) {
       Managers.Input.SetInputReceiver(Managers.Main.cameraOperator);
     } else {
+      if (Managers.Main.gameMode !== GameMode.GAME) return;
+
       for (const action in this.actions) {
         if (this.actions.hasOwnProperty(action)) {
           const binding = this.actions[action];

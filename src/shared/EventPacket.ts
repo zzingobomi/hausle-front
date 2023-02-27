@@ -4,4 +4,8 @@ export enum EventPacket {
   UpdatePlayerQuaternion = "update.player.quaternion",
   UpdatePlayerScale = "update.player.scale",
   UpdatePlayerState = "update.player.state",
+
+  // Chatting
+  ChattingSend = "chatting.send",
+  ChattingReceive = "chatting.receive",
 }
