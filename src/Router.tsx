@@ -3,6 +3,8 @@ import App from "./App";
 import { NotFound } from "./pages/NotFound";
 import { Login } from "./pages/users/Login";
 import { InGame } from "./pages/ingame/InGame";
+import { CreateAccount } from "./pages/users/CreateAccount";
+import { GuestLogin } from "./pages/users/GuestLogin";
 
 const router = createBrowserRouter([
   {
@@ -11,11 +13,23 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <InGame />,
+        element: <Login />,
       },
       {
         path: "login",
         element: <Login />,
+      },
+      {
+        path: "guest-login",
+        element: <GuestLogin />,
+      },
+      {
+        path: "create-account",
+        element: <CreateAccount />,
+      },
+      {
+        path: "dungeon",
+        element: <InGame />,
       },
     ],
     errorElement: <NotFound />,

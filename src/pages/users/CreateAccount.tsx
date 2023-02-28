@@ -4,66 +4,64 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Button";
 import { FormError } from "../../components/FormError";
-import { LOCALSTORAGE_TOKEN } from "../../constants";
-import { authTokenVar, isLoggedInVar } from "../../apollo";
 import {
-  loginMutation,
-  loginMutationVariables,
-} from "../../__generated__/loginMutation";
+  createAccountMutation,
+  createAccountMutationVariables,
+} from "../../__generated__/createAccountMutation";
 
-const LOGIN_MUTATION = gql`
-  mutation loginMutation($loginInput: LoginInput!) {
-    login(input: $loginInput) {
+const CREATE_ACCOUNT_MUTATION = gql`
+  mutation createAccountMutation($createAccountInput: CreateAccountInput!) {
+    createAccount(input: $createAccountInput) {
       ok
-      token
       error
     }
   }
 `;
 
-interface ILoginForm {
+interface ICreateAccountForm {
   email: string;
   password: string;
+  nickname: string;
 }
 
-export const Login = () => {
+export const CreateAccount = () => {
   const navigate = useNavigate();
   const {
     register,
     getValues,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<ILoginForm>({
+  } = useForm<ICreateAccountForm>({
     mode: "onChange",
   });
 
-  const onCompleted = (data: loginMutation) => {
+  const onCompleted = (data: createAccountMutation) => {
     const {
-      login: { ok, token },
+      createAccount: { ok },
     } = data;
-    if (ok && token) {
-      localStorage.setItem(LOCALSTORAGE_TOKEN, token);
-      authTokenVar(token);
-      isLoggedInVar(true);
+    if (ok) {
+      alert("계정이 만들어졌습니다. 로그인해 주세요.");
+      navigate("/login");
     }
   };
 
-  const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
-    loginMutation,
-    loginMutationVariables
-  >(LOGIN_MUTATION, {
-    onCompleted,
-  });
+  const [
+    createAccountMutation,
+    { loading, data: createAccountMutationResult },
+  ] = useMutation<createAccountMutation, createAccountMutationVariables>(
+    CREATE_ACCOUNT_MUTATION,
+    {
+      onCompleted,
+    }
+  );
 
   const onSubmit = () => {
+    console.log("tt");
     if (!loading) {
-      const { email, password } = getValues();
-      loginMutation({
+      const { email, password, nickname } = getValues();
+      createAccountMutation({
         variables: {
-          loginInput: {
-            email,
-            password,
-          },
+          createAccountInput: { email, password, nickname },
         },
       });
     }
@@ -72,52 +70,21 @@ export const Login = () => {
   return (
     <main>
       <Helmet>
-        <title>Login | Dungeon</title>
+        <title>Create Account | Dungeon</title>
       </Helmet>
       <section className="absolute w-full h-full">
-        <div className="panel-background panel-background-image"></div>
+        <div className="absolute top-0 w-full h-full bg-gray-900 panel-background-image"></div>
         <div className="container mx-auto px-4 h-full">
           <div className="flex content-center items-center justify-center h-full">
             <div className="w-full lg:w-4/12 px-4">
               <div className="panel">
                 <div className="rounded-t mb-0 px-6 py-6">
-                  <div className="text-center mb-3">
-                    <h6 className="text-gray-600 text-sm font-bold">
-                      Sign in with
-                    </h6>
-                  </div>
-                  <div className="btn-wrapper text-center">
-                    <button
-                      className="panel-social mr-2 "
-                      type="button"
-                      style={{ transition: "all .15s ease" }}
-                    >
-                      <img
-                        alt="..."
-                        className="w-5 mr-1"
-                        src={"/img/github.svg"}
-                      />
-                      Github
-                    </button>
-                    <button
-                      className="panel-social mr-1"
-                      type="button"
-                      style={{ transition: "all .15s ease" }}
-                    >
-                      <img
-                        alt="..."
-                        className="w-5 mr-1"
-                        src={"/img/google.svg"}
-                      />
-                      Google
-                    </button>
+                  <div className="text-gray-500 text-center mb-3 font-bold">
+                    <small>Create Account</small>
                   </div>
                   <hr className="mt-6 border-b-1 border-gray-400" />
                 </div>
                 <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-                  <div className="text-gray-500 text-center mb-3 font-bold">
-                    <small>Or sign in with Email</small>
-                  </div>
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="relative w-full mb-3">
                       <label
@@ -167,52 +134,49 @@ export const Login = () => {
                         <FormError errorMessage={errors.password?.message} />
                       )}
                     </div>
-                    <div>
-                      <label className="inline-flex items-center cursor-pointer">
-                        <input
-                          id="customCheckLogin"
-                          type="checkbox"
-                          className="form-checkbox border-0 rounded text-gray-800 ml-1 w-5 h-5"
-                          style={{ transition: "all .15s ease" }}
-                        />
-                        <span className="ml-2 text-sm font-semibold text-gray-700">
-                          Remember me
-                        </span>
+
+                    <div className="relative w-full mb-3">
+                      <label
+                        className="panel-input-title"
+                        htmlFor="grid-password"
+                      >
+                        Nickname
                       </label>
+                      <input
+                        {...register("nickname", {
+                          required: "닉네임을 입력해주세요.",
+                        })}
+                        type="text"
+                        className="panel-input"
+                        placeholder="Nickname"
+                        style={{ transition: "all .15s ease" }}
+                      />
+                      {errors.nickname?.message && (
+                        <FormError errorMessage={errors.nickname?.message} />
+                      )}
                     </div>
 
                     <Button
                       canClick={isValid}
                       loading={loading}
-                      actionText={"Sign In"}
+                      actionText={"Create Account"}
                     />
                   </form>
                 </div>
               </div>
 
               <div className="flex flex-wrap mt-6 relative">
-                <div className="w-1/2">
+                <div className="w-1/2"></div>
+                <div className="w-1/2 text-right">
                   <a
-                    href="/guest-login"
+                    href="/login"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate("/guest-login");
+                      navigate("/login");
                     }}
                     className="text-gray-500"
                   >
-                    <small>Guest login</small>
-                  </a>
-                </div>
-                <div className="w-1/2 text-right">
-                  <a
-                    href="/create-account"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigate("/create-account");
-                    }}
-                    className="text-yellow-500"
-                  >
-                    <small>Create new account</small>
+                    <small>Go to Login</small>
                   </a>
                 </div>
               </div>
