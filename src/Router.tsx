@@ -5,6 +5,7 @@ import { Login } from "./pages/users/Login";
 import { InGame } from "./pages/ingame/InGame";
 import { CreateAccount } from "./pages/users/CreateAccount";
 import { GuestLogin } from "./pages/users/GuestLogin";
+import { ProtectedRoute } from "./pages/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,11 @@ const router = createBrowserRouter([
       },
       {
         path: "dungeon",
-        element: <InGame />,
+        element: (
+          <ProtectedRoute>
+            <InGame />
+          </ProtectedRoute>
+        ),
       },
     ],
     errorElement: <NotFound />,

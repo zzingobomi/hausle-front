@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Button";
 import { FormError } from "../../components/FormError";
+import { isLoggedInVar } from "../../apollo";
 
 interface IGuestLoginForm {
   nickname: string;
@@ -21,6 +22,7 @@ export const GuestLogin = () => {
 
   const onSubmit = () => {
     const { nickname } = getValues();
+    isLoggedInVar(true);
     navigate("/dungeon", { state: { nickname } });
   };
 

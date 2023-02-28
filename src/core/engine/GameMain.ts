@@ -33,14 +33,18 @@ export class GameMain {
   public eventQueue: EventQueue;
   private rapierDebugRenderer: RapierDebugRenderer;
 
+  // Nickname
+  private nickname: string;
+
   // GameMode
   public gameMode: GameMode = GameMode.GAME;
 
   // Debug
   public stats: Stats;
 
-  constructor() {
+  constructor(nickname: string) {
     this.divContainer = document.querySelector("#container") as HTMLDivElement;
+    this.nickname = nickname;
 
     this.initRenderer();
     this.initScene();
@@ -58,6 +62,10 @@ export class GameMain {
     requestAnimationFrame(this.render.bind(this));
 
     Managers.Main = this;
+  }
+
+  public Dispose(): void {
+    // TODO: dispose 3d world
   }
 
   private initRenderer(): void {
@@ -121,7 +129,7 @@ export class GameMain {
   }
 
   private async initServer(): Promise<void> {
-    Managers.Network.InitServer("test");
+    Managers.Network.InitServer(this.nickname);
   }
 
   private update(delta: number): void {

@@ -45,6 +45,7 @@ export const Login = () => {
       localStorage.setItem(LOCALSTORAGE_TOKEN, token);
       authTokenVar(token);
       isLoggedInVar(true);
+      navigate("/dungeon");
     }
   };
 
@@ -186,6 +187,11 @@ export const Login = () => {
                       loading={loading}
                       actionText={"Sign In"}
                     />
+                    {loginMutationResult?.login.error && (
+                      <FormError
+                        errorMessage={loginMutationResult.login.error}
+                      />
+                    )}
                   </form>
                 </div>
               </div>
