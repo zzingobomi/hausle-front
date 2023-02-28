@@ -70,6 +70,17 @@ export const Login = () => {
     }
   };
 
+  const onGoogleLogin = async () => {
+    try {
+      window.open(
+        `http://${process.env.REACT_APP_BACKEND}/auth/google`,
+        "_self"
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <main>
       <Helmet>
@@ -104,6 +115,7 @@ export const Login = () => {
                       className="panel-social mr-1"
                       type="button"
                       style={{ transition: "all .15s ease" }}
+                      onClick={onGoogleLogin}
                     >
                       <img
                         alt="..."

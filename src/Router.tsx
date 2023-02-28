@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./App";
 import { NotFound } from "./pages/NotFound";
 import { Login } from "./pages/users/Login";
@@ -27,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "create-account",
         element: <CreateAccount />,
+      },
+      {
+        path: "google-oauth-success-redirect",
+        element: <Navigate replace to="/guest-login" />,
       },
       {
         path: "dungeon",
