@@ -81,6 +81,17 @@ export const Login = () => {
     }
   };
 
+  const onGithubLogin = async () => {
+    try {
+      window.open(
+        `http://${process.env.REACT_APP_BACKEND}/auth/github`,
+        "_self"
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <main>
       <Helmet>
@@ -103,6 +114,7 @@ export const Login = () => {
                       className="panel-social mr-2 "
                       type="button"
                       style={{ transition: "all .15s ease" }}
+                      onClick={onGithubLogin}
                     >
                       <img
                         alt="..."

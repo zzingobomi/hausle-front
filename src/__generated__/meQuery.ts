@@ -12,6 +12,7 @@ export interface meQuery_me {
   id: number;
   email: string;
   nickname: string;
+  photoUrl: string | null;
 }
 
 export interface meQuery {

@@ -19,6 +19,11 @@ export enum GameMode {
   CHATTING,
 }
 
+export interface UserInfo {
+  nickname: string;
+  photoUrl: string | null;
+}
+
 export class GameMain {
   private divContainer: HTMLDivElement;
   public renderer: WebGLRenderer;
@@ -33,8 +38,7 @@ export class GameMain {
   public eventQueue: EventQueue;
   private rapierDebugRenderer: RapierDebugRenderer;
 
-  // Nickname
-  private nickname: string;
+  public userInfo: UserInfo = { nickname: "", photoUrl: null };
 
   // GameMode
   public gameMode: GameMode = GameMode.GAME;
@@ -42,9 +46,12 @@ export class GameMain {
   // Debug
   public stats: Stats;
 
-  constructor(nickname: string) {
+  constructor(userInfo: UserInfo) {
     this.divContainer = document.querySelector("#container") as HTMLDivElement;
-    this.nickname = nickname;
+    this.userInfo.nickname = userInfo.nickname;
+    this.userInfo.photoUrl = userInfo.photoUrl;
+
+    console.log(this.userInfo);
 
     this.initRenderer();
     this.initScene();
@@ -129,7 +136,7 @@ export class GameMain {
   }
 
   private async initServer(): Promise<void> {
-    Managers.Network.InitServer(this.nickname);
+    Managers.Network.InitServer(this.userInfo.nickname);
   }
 
   private update(delta: number): void {

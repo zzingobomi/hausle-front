@@ -13,6 +13,7 @@ interface IChattingData {
   sessionId: string;
   message: string;
   time: number;
+  photoUrl: string | null;
 }
 
 export class NetworkManager {
@@ -45,12 +46,14 @@ export class NetworkManager {
               type: ChattingItemType.MINE,
               message: data.message,
               time: data.time,
+              photoUrl: data.photoUrl,
             });
           } else {
             PubSub.publish(CHATTING_RECEIVE, {
               type: ChattingItemType.REMOTE,
               message: data.message,
               time: data.time,
+              photoUrl: data.photoUrl,
             });
           }
         }
@@ -134,6 +137,9 @@ export class NetworkManager {
   /// Chatting
   ///
   public SendChatting(message: string): void {
-    this.room.send(EventPacket.ChattingSend, message);
+    this.room.send(EventPacket.ChattingSend, {
+      message,
+      photoUrl: Managers.Main.userInfo.photoUrl,
+    });
   }
 }

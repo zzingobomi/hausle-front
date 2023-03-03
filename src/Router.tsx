@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import { NotFound } from "./pages/NotFound";
 import { Login } from "./pages/users/Login";
@@ -6,6 +6,7 @@ import { InGame } from "./pages/ingame/InGame";
 import { CreateAccount } from "./pages/users/CreateAccount";
 import { GuestLogin } from "./pages/users/GuestLogin";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
+import { SocialLoginSuccess } from "./pages/users/SocialLoginSuccess";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,11 @@ const router = createBrowserRouter([
       },
       {
         path: "google-oauth-success-redirect",
-        element: <Navigate replace to="/guest-login" />,
+        element: <SocialLoginSuccess />,
+      },
+      {
+        path: "github-oauth-success-redirect",
+        element: <SocialLoginSuccess />,
       },
       {
         path: "dungeon",

@@ -1,4 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IMessageInfo } from "../ChattingUi";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 import * as dayjs from "dayjs";
 
 export enum ChattingItemType {
@@ -7,7 +9,12 @@ export enum ChattingItemType {
   MINE = "Mine",
 }
 
-export const ChattingItem = ({ type, message, time }: IMessageInfo) => {
+export const ChattingItem = ({
+  type,
+  message,
+  time,
+  photoUrl,
+}: IMessageInfo) => {
   return (
     <>
       {type === ChattingItemType.SERVER ? (
@@ -21,7 +28,13 @@ export const ChattingItem = ({ type, message, time }: IMessageInfo) => {
           }`}
         >
           {type === ChattingItemType.REMOTE ? (
-            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+            <div className="flex justify-center items-center flex-shrink-0 h-10 w-10 rounded-full bg-gray-300">
+              {photoUrl ? (
+                <img alt="user" src={photoUrl} className="rounded-full" />
+              ) : (
+                <FontAwesomeIcon icon={faUser} size="lg" />
+              )}
+            </div>
           ) : null}
           <div>
             <div
@@ -38,7 +51,13 @@ export const ChattingItem = ({ type, message, time }: IMessageInfo) => {
             </span>
           </div>
           {type === ChattingItemType.MINE ? (
-            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+            <div className="flex justify-center items-center flex-shrink-0 h-10 w-10 rounded-full bg-gray-300">
+              {photoUrl ? (
+                <img alt="user" src={photoUrl} className="rounded-full" />
+              ) : (
+                <FontAwesomeIcon icon={faUser} size="lg" />
+              )}
+            </div>
           ) : null}
         </div>
       )}

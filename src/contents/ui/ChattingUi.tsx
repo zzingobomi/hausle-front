@@ -9,6 +9,7 @@ export interface IMessageInfo {
   type: ChattingItemType;
   message: string;
   time: number;
+  photoUrl?: string;
 }
 
 export const ChattingUi = () => {
@@ -77,6 +78,7 @@ export const ChattingUi = () => {
                   type={messageInfo.type}
                   message={messageInfo.message}
                   time={messageInfo.time}
+                  photoUrl={messageInfo.photoUrl}
                 ></ChattingItem>
               );
             })}

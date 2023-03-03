@@ -11,6 +11,7 @@ export interface CreateAccountInput {
   email: string;
   password: string;
   nickname: string;
+  photoUrl?: string | null;
 }
 
 export interface LoginInput {

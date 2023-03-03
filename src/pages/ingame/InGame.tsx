@@ -13,10 +13,11 @@ export const InGame = () => {
 
   useEffect(() => {
     const nickname = location.state?.nickname ?? userData?.me.nickname;
+    const photoUrl = userData?.me.photoUrl ?? null;
     let isMounted = true;
     if (nickname && isMounted) {
       if (container.current && container.current.children.length > 0) return;
-      world.current = new GameMain(nickname);
+      world.current = new GameMain({ nickname, photoUrl });
     }
 
     return () => {
