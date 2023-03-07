@@ -56,7 +56,6 @@ export const CreateAccount = () => {
   );
 
   const onSubmit = () => {
-    console.log("tt");
     if (!loading) {
       const { email, password, nickname } = getValues();
       createAccountMutation({
