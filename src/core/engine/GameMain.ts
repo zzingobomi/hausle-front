@@ -124,10 +124,10 @@ export class GameMain {
     const gravity = { x: 0.0, y: -9.81, z: 0.0 };
     this.physicsWorld = new World(gravity);
     this.eventQueue = new EventQueue(false);
-    this.rapierDebugRenderer = new RapierDebugRenderer(
-      this.scene,
-      this.physicsWorld
-    );
+    // this.rapierDebugRenderer = new RapierDebugRenderer(
+    //   this.scene,
+    //   this.physicsWorld
+    // );
 
     this.dungeonWorld = new DungeonWorld();
     await this.dungeonWorld.Init();
