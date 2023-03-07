@@ -1,46 +1,63 @@
-# Getting Started with Create React App
+<h1 align="center">
+  <a href="http://zzingo5.synology.me:17000"><img src="http://zzingo5.synology.me:9000/hausle/logo.png" alt="dungeon" height="250px"></a>
+  <br>
+  Dungon Adventure
+  <br>
+</h1>
+<br>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  <img src="http://zzingo5.synology.me:9000/hausle/login.jpg" alt="login" width="300px" />
+  <img src="http://zzingo5.synology.me:9000/hausle/ingame.jpg" alt="ingame" width="300px" />
+</p>
 
-## Available Scripts
+<br/>
 
-In the project directory, you can run:
+### Frontend
 
-### `npm start`
+##### React
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- React Typescript 를 이용하여 페이지 제작
+- Tailwind CSS 를 이용하여 디자인 적용
+- GraphQL 을 이용하여 Backend 와 통신
+- React-hook-form 을 이용하여 validation 처리
+- React-router-dom 을 이용해서 Route 처리
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+##### ThreeJS
 
-### `npm test`
+- Three.js 를 이용하여 3D 렌더링 적용
+- 캐릭터 조작 및 애니메이션 처리
+- Rapier3D 엔진을 이용하여 물리 처리 (etc. gravity, collision)
+- 부드러운 움직임을 위해 이동 동기화시 보간 처리
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+### Multiplayer Server
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+##### Colyseus
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Colyseus 프레임워크를 이용하여 멀티플레이 적용
+- Three.js 를 이용하여 Dungeon 월드 상태 계산
+- 캐릭터 및 NPC Transform 동기화
+- AStar 및 PathFinder 알고리즘을 이용한 NPC 길찾기 적용
+- WebSocket 을 이용하여 채팅 기능 구현
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+### Backend
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+##### NestJS
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- NestJS 프레임워크를 이용하여 로그인 서버 구현
+- Google, Github OAuth 로그인 구현
+- TypeORM 과 PostgreSQL 을 이용한 데이터 저장
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+---
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Infra
 
-## Learn More
+##### Synology Docker
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- 개인 Synology NAS docker 를 이용하여 서비스 환경 구축
+- Frontend, GameServer, Backend 도커 이미지 빌드 후 컨테이너 생성
+- MinIO, PostgreSQL 컨테이너 생성
