@@ -63,10 +63,10 @@ export class MyCharacter extends Character implements IInputReceiver {
     // Actions
     this.actions = {
       // Movement
-      up: new KeyBinding("KeyW"),
-      down: new KeyBinding("KeyS"),
-      left: new KeyBinding("KeyA"),
-      right: new KeyBinding("KeyD"),
+      up: new KeyBinding("KeyW", "ArrowUp"),
+      down: new KeyBinding("KeyS", "ArrowDown"),
+      left: new KeyBinding("KeyA", "ArrowLeft"),
+      right: new KeyBinding("KeyD", "ArrowRight"),
       run: new KeyBinding("ShiftLeft"),
       jump: new KeyBinding("Space"),
     };
