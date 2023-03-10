@@ -2,6 +2,7 @@ import { ICharacterState } from "../../core/interfaces/ICharacterState";
 import { Character } from "../Character";
 import { MyCharacter } from "../MyCharacter";
 import { CharacterStateBase } from "./CharacterStateBase";
+import { Jump } from "./Jump";
 import { Walk } from "./Walk";
 
 export class Idle extends CharacterStateBase implements ICharacterState {
@@ -33,7 +34,7 @@ export class Idle extends CharacterStateBase implements ICharacterState {
     super.OnInputChange();
 
     if (this.character.actions.jump.justPressed) {
-      //this.character.SetState(new JumpIdle(this.character));
+      this.character.SetState(new Jump(this.character));
     }
 
     if (this.anyDirection()) {

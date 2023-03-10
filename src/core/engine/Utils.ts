@@ -1,13 +1,14 @@
 import { Matrix4, Object3D, Quaternion, Vector3, BufferGeometry } from "three";
 import { Character } from "../../characters/Character";
-import { Idle } from "../../characters/character_states/Idle";
-import { Run } from "../../characters/character_states/Run";
-import { Walk } from "../../characters/character_states/Walk";
 import { Vec3 } from "../../shared/Vec3";
 import { Vec4 } from "../../shared/Vec4";
 import { CharStateType } from "../../shared/CharStateType";
 import { Space } from "../enums/Space";
 import { SimulationFrame } from "../physics/spring_simulation/SimulationFrame";
+import { Idle } from "../../characters/character_states/Idle";
+import { Run } from "../../characters/character_states/Run";
+import { Walk } from "../../characters/character_states/Walk";
+import { Jump } from "../../characters/character_states/Jump";
 
 export function vec32three(vec: Vec3): Vector3 {
   return new Vector3(vec.x, vec.y, vec.z);
@@ -234,6 +235,8 @@ export function characterStateFactory(
       return new Walk(character);
     case CharStateType.Run:
       return new Run(character);
+    case CharStateType.Jump:
+      return new Jump(character);
     default:
       return new Idle(character);
   }

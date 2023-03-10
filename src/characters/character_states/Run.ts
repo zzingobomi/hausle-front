@@ -2,6 +2,7 @@ import { Character } from "../Character";
 import { MyCharacter } from "../MyCharacter";
 import { CharacterStateBase } from "./CharacterStateBase";
 import { Idle } from "./Idle";
+import { Jump } from "./Jump";
 import { Walk } from "./Walk";
 
 export class Run extends CharacterStateBase {
@@ -34,6 +35,10 @@ export class Run extends CharacterStateBase {
 
     // TEMP
     if (!this.character.actions) return;
+
+    if (this.character.actions.jump.justPressed) {
+      this.character.SetState(new Jump(this.character));
+    }
 
     if (!this.character.actions.run.isPressed) {
       this.character.SetState(new Walk(this.character));

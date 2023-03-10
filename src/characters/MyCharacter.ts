@@ -38,6 +38,9 @@ export class MyCharacter extends Character implements IInputReceiver {
   public viewVector: Vector3 = new Vector3();
   public actions: { [action: string]: KeyBinding };
 
+  public defaultJumpPower: number = 1.0;
+  public jumping: boolean = false;
+
   public physicsEnabled: boolean = true;
 
   // 서버 동기화
@@ -184,6 +187,10 @@ export class MyCharacter extends Character implements IInputReceiver {
     }
   }
 
+  public Jump(jumping: boolean): void {
+    this.jumping = jumping;
+  }
+
   protected triggerAction(actionName: string, value: boolean): void {
     let action = this.actions[actionName];
 
@@ -283,7 +290,7 @@ export class MyCharacter extends Character implements IInputReceiver {
       this.rigidBody.setLinvel(
         {
           x: arcadeVelocity.x,
-          y: this.rigidBody.linvel().y,
+          y: this.jumping ? this.defaultJumpPower : this.rigidBody.linvel().y,
           z: arcadeVelocity.z,
         },
         true

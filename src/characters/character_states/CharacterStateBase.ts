@@ -1,7 +1,4 @@
-//import { EventPacket } from "../../shared/EventPacket";
 import { ICharacterState } from "../../core/interfaces/ICharacterState";
-import { Managers } from "../../core/managers/Managers";
-import { NetworkManager } from "../../core/managers/NetworkManager";
 import { Character } from "../Character";
 import { MyCharacter } from "../MyCharacter";
 
